@@ -1,0 +1,10 @@
+#Compiled source#
+*.com
+*.class
+
+#Folders#
+target/*
+/target/
+
+#Files#
+*.csv
