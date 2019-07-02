@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.equalTo;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.google.gson.JsonParser;
 import com.leandro.restassured.example.credentials.Keys;
 import com.leandro.restassured.example.credentials.URI;
 import com.leandro.restassured.example.report.GenerateReport;
