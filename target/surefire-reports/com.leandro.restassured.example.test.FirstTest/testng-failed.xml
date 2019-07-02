@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="0" name="Failed suite [com.leandro.restassured.example.test.FirstTest]">
+  <test thread-count="5" verbose="0" name="Command line test(failed)">
+    <classes>
+      <class name="com.leandro.restassured.example.test.FirstTest">
+        <methods>
+          <include name="startReport"/>
+          <include name="endReport"/>
+          <include name="failTest"/>
+          <include name="skipTest"/>
+          <include name="getResult"/>
+          <include name="set"/>
+        </methods>
+      </class> <!-- com.leandro.restassured.example.test.FirstTest -->
+    </classes>
+  </test> <!-- Command line test(failed) -->
+</suite> <!-- Failed suite [com.leandro.restassured.example.test.FirstTest] -->
