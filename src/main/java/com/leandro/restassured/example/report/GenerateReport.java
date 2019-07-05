@@ -74,7 +74,6 @@ public class GenerateReport {
 		try {
 			message = String.format("Init test '%s'.", method.getName());
 			testInfo = reports.createTest(method.getName());
-			testInfo.log(Status.INFO, message);
 			System.out.println(String.format("\n%s", message));
 
 		} catch (Exception e) {
