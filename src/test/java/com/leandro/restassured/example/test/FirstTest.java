@@ -1,23 +1,27 @@
 package com.leandro.restassured.example.test;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.leandro.restassured.example.credentials.Keys;
 import com.leandro.restassured.example.credentials.URI;
+import com.leandro.restassured.example.data.ExampleBody;
 import com.leandro.restassured.example.report.GenerateReport;
+import com.leandro.restassured.example.util.RestHelper;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 public class FirstTest extends GenerateReport {
 
 	Response response;
+	RestHelper restHelper = new RestHelper();
 
 	@BeforeMethod
 	public void set() {
@@ -47,7 +51,8 @@ public class FirstTest extends GenerateReport {
 	@Test
 	public void serverStatusTest() {
 		response = given().header("X-Riot-Token", Keys.getApikey()).when().get("/lol/status/v3/shard-data");
-		int servicesListSize = 0 ;
+
+		int servicesListSize = 0;
 
 		try {
 			servicesListSize = response.jsonPath().getInt("services.size()");
@@ -64,4 +69,26 @@ public class FirstTest extends GenerateReport {
 		}
 	}
 
+	@Test
+	public void examplePostTest() {
+		RestAssured.baseURI = URI.getTestURI();
+
+		ExampleBody example = new ExampleBody();
+
+		example.setId(null);
+		example.setName("TESTE");
+
+		try {
+			response = given().contentType(ContentType.JSON).body(restHelper.createRequest(example)).when()
+					.post("/posts");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		assertThat(response.getStatusCode(), equalTo(201));
+		assertThat(response.getBody(), not(equalTo(null)));
+		assertThat(response.jsonPath().getString("name"), equalTo(example.getName()));
+		assertThat(response.jsonPath().getInt("id"), not(equalTo(null)));
+
+	}
 }
