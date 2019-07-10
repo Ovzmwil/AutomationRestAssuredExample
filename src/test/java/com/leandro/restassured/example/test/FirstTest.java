@@ -81,6 +81,7 @@ public class FirstTest extends GenerateReport {
 		try {
 			response = given().contentType(ContentType.JSON).body(restHelper.createRequest(example)).when()
 					.post("/posts");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -20,5 +20,4 @@ public class ExampleBody {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 }
