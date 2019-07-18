@@ -5,6 +5,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -16,12 +21,19 @@ import com.leandro.restassured.example.util.RestHelper;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.http.Header;
 import io.restassured.response.Response;
 
 public class FirstTest extends GenerateReport {
 
 	Response response;
 	RestHelper restHelper = new RestHelper();
+	
+	Map<String, Object> paramsMap = new HashMap<String, Object>();
+	Map<String, Object> bodyMap = new HashMap<String, Object>();
+	
+	List<Header> headerList = new ArrayList<Header>();
+
 
 	@BeforeMethod
 	public void set() {
@@ -30,7 +42,15 @@ public class FirstTest extends GenerateReport {
 
 	@Test
 	public void freeWeekTestParamKey() {
-		response = given().param("api_key", Keys.getApikey()).when().get("/lol/platform/v3/champion-rotations");
+		paramsMap.put("api_key", Keys.getApikey());
+		
+		try {
+			response = given().formParams(paramsMap).when().get("/lol/platform/v3/champion-rotations");
+
+//			response = given().param("api_key", Keys.getApikey()).when().get("/lol/platform/v3/champion-rotations");
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		assertThat(response.getStatusCode(), equalTo(200));
 		assertThat(response.jsonPath().getInt("freeChampionIds.size()"), equalTo(14));
@@ -40,7 +60,15 @@ public class FirstTest extends GenerateReport {
 
 	@Test
 	public void freeWeekTestHeaderKey() {
-		response = given().header("X-Riot-Token", Keys.getApikey()).when().get("/lol/platform/v3/champion-rotations");
+		headerList.add(new Header("X-Riot-Token", Keys.getApikey()));
+		
+		try {
+			response = given().header(headerList.get(0)).when().get("/lol/platform/v3/champion-rotations");
+
+//			response = given().header("X-Riot-Token", Keys.getApikey()).when().get("/lol/platform/v3/champion-rotations");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		assertThat(response.getStatusCode(), equalTo(200));
 		assertThat(response.jsonPath().getInt("freeChampionIds.size()"), equalTo(14));
@@ -72,24 +100,30 @@ public class FirstTest extends GenerateReport {
 	@Test
 	public void examplePostTest() {
 		RestAssured.baseURI = URI.getTestURI();
-
 		ExampleBody example = new ExampleBody();
 
-		example.setId(null);
-		example.setName("TESTE");
+//		example.setId(null);
+//		example.setName("TESTE");
+		
+		bodyMap.put("id", null);
+		bodyMap.put("name", "TESTE");
 
 		try {
-			response = given().contentType(ContentType.JSON).body(restHelper.createRequest(example)).when()
-					.post("/posts");
+//			response = given().contentType(ContentType.JSON).body(restHelper.createRequest(example)).when()
+//					.post("/posts");
 			
+			response = given().contentType(ContentType.JSON).body(bodyMap).when().post("/posts");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		assertThat(response.getStatusCode(), equalTo(201));
 		assertThat(response.getBody(), not(equalTo(null)));
-		assertThat(response.jsonPath().getString("name"), equalTo(example.getName()));
+		assertThat(response.jsonPath().getString("name"), equalTo("TESTE"));
 		assertThat(response.jsonPath().getInt("id"), not(equalTo(null)));
-
+		
+//		assertThat(response.jsonPath().getString("name"), equalTo(example.getName()));
+//		assertThat(response.jsonPath().getInt("id"), not(equalTo(null)));
 	}
 }
