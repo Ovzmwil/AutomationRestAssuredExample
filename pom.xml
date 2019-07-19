@@ -6,8 +6,11 @@
 	<artifactId>RestAssuredExample</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<dependencies>
+	<properties>
+		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+	</properties>
 
+	<dependencies>
 		<dependency>
 			<groupId>com.aventstack</groupId>
 			<artifactId>extentreports</artifactId>
@@ -57,7 +60,6 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 </project>
