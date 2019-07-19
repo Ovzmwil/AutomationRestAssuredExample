@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.leandro.restassured.example.credentials.Keys;
 import com.leandro.restassured.example.credentials.URI;
-import com.leandro.restassured.example.data.ExampleBody;
 import com.leandro.restassured.example.report.GenerateReport;
 import com.leandro.restassured.example.util.RestHelper;
 
@@ -28,27 +28,32 @@ public class FirstTest extends GenerateReport {
 
 	Response response;
 	RestHelper restHelper = new RestHelper();
-	
+
 	Map<String, Object> paramsMap = new HashMap<String, Object>();
 	Map<String, Object> bodyMap = new HashMap<String, Object>();
-	
-	List<Header> headerList = new ArrayList<Header>();
 
+	List<Header> headerList = new ArrayList<Header>();
 
 	@BeforeMethod
 	public void set() {
 		RestAssured.baseURI = URI.getRiotURI();
+		bodyMap.clear();
+	}
+
+	@AfterMethod
+	public void finish() {
+		afterAPITest(bodyMap, response);
 	}
 
 	@Test
 	public void freeWeekTestParamKey() {
 		paramsMap.put("api_key", Keys.getApikey());
-		
+
 		try {
 			response = given().formParams(paramsMap).when().get("/lol/platform/v3/champion-rotations");
 
 //			response = given().param("api_key", Keys.getApikey()).when().get("/lol/platform/v3/champion-rotations");
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -61,7 +66,7 @@ public class FirstTest extends GenerateReport {
 	@Test
 	public void freeWeekTestHeaderKey() {
 		headerList.add(new Header("X-Riot-Token", Keys.getApikey()));
-		
+
 		try {
 			response = given().header(headerList.get(0)).when().get("/lol/platform/v3/champion-rotations");
 
@@ -81,6 +86,8 @@ public class FirstTest extends GenerateReport {
 		response = given().header("X-Riot-Token", Keys.getApikey()).when().get("/lol/status/v3/shard-data");
 
 		int servicesListSize = 0;
+		
+		assertThat(response.getStatusCode(), equalTo(200));
 
 		try {
 			servicesListSize = response.jsonPath().getInt("services.size()");
@@ -88,7 +95,6 @@ public class FirstTest extends GenerateReport {
 			e.printStackTrace();
 		}
 
-		assertThat(response.getStatusCode(), equalTo(200));
 		assertThat(response.jsonPath().getString("name"), equalTo("Brazil"));
 		assertThat(servicesListSize, not(equalTo(0)));
 
@@ -100,18 +106,18 @@ public class FirstTest extends GenerateReport {
 	@Test
 	public void examplePostTest() {
 		RestAssured.baseURI = URI.getTestURI();
-		ExampleBody example = new ExampleBody();
+//		ExampleBody example = new ExampleBody();
 
 //		example.setId(null);
 //		example.setName("TESTE");
-		
+
 		bodyMap.put("id", null);
 		bodyMap.put("name", "TESTE");
 
 		try {
 //			response = given().contentType(ContentType.JSON).body(restHelper.createRequest(example)).when()
 //					.post("/posts");
-			
+
 			response = given().contentType(ContentType.JSON).body(bodyMap).when().post("/posts");
 
 		} catch (Exception e) {
@@ -122,7 +128,7 @@ public class FirstTest extends GenerateReport {
 		assertThat(response.getBody(), not(equalTo(null)));
 		assertThat(response.jsonPath().getString("name"), equalTo("TESTE"));
 		assertThat(response.jsonPath().getInt("id"), not(equalTo(null)));
-		
+
 //		assertThat(response.jsonPath().getString("name"), equalTo(example.getName()));
 //		assertThat(response.jsonPath().getInt("id"), not(equalTo(null)));
 	}

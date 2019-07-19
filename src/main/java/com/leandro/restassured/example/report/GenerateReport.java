@@ -123,7 +123,6 @@ public class GenerateReport {
 	public void log(String text) {
 		try {
 			testInfo.log(Status.INFO, text);
-			System.out.println(text);
 		} catch (Exception e) {
 			e.getMessage();
 		}
@@ -133,7 +132,6 @@ public class GenerateReport {
 		try {
 			testInfo.log(Status.INFO, text);
 			testInfo.log(Status.INFO, MarkupHelper.createCodeBlock(codeBlock));
-			System.out.println(String.format("%s %s", text, codeBlock));
 		} catch (Exception e) {
 			e.getMessage();
 		}
@@ -176,7 +174,7 @@ public class GenerateReport {
 			String tempBodyResponse = response.getBody().asString();
 			String tempRequest = "";
 
-			if (request == null) {
+			if (request == null || request.isEmpty()) {
 				tempRequest = "No request info";
 			} else {
 				tempRequest = new Gson().toJson(request);
@@ -189,13 +187,13 @@ public class GenerateReport {
 			if (tempRequest.length() > 1000) {
 				this.logCodeBlock("Request:", tempRequest);
 			} else {
-				this.log(String.format("Request: %s.", tempRequest));
+				this.log(String.format("Request: %s", tempRequest));
 			}
 
 			if (tempBodyResponse.length() > 1000) {
 				this.logCodeBlock("Response:", tempBodyResponse);
 			} else {
-				this.log(String.format("Response: %s.", tempBodyResponse));
+				this.log(String.format("Response: %s", tempBodyResponse));
 			}
 
 			this.logTimeout(response.time());
